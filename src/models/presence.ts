@@ -1,9 +1,8 @@
 
 import { Sequelize, DataTypes } from 'sequelize'
+import { sequelize } from '../db/sequelize.connection'
 
-const sequelize = new Sequelize(process.env.DATABASE_URL || '', { dialect: 'mysql' })
-
-export const PresenceModel = sequelize.define('meeting_user', {
+export const PresenceModel = sequelize.define('presence', {
     id: {
         primaryKey: true,
         autoIncrement: true,
@@ -29,4 +28,4 @@ export const PresenceModel = sequelize.define('meeting_user', {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     }
-}, { tableName: 'meeting_user' })
+}, { tableName: 'presence' })

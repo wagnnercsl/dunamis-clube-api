@@ -1,8 +1,7 @@
 require('dotenv').config()
 
 import { Sequelize, DataTypes } from 'sequelize'
-
-const sequelize = new Sequelize(process.env.DATABASE_URL || '', { dialect: 'mysql' })
+import { sequelize } from '../db/sequelize.connection'
 
 export const MeetingModel = sequelize.define('meeting', {
     id: {

@@ -2,11 +2,10 @@ require('dotenv').config()
 
 import { Sequelize, DataTypes } from 'sequelize'
 import { MeetingModel } from './meeting'
-import { PresenceModel } from './meetingUser'
+import { PresenceModel } from './presence'
+import { sequelize } from '../db/sequelize.connection'
 
-const sequelize = new Sequelize(process.env.DATABASE_URL || '', { dialect: 'mysql' })
-
-export const UserModel = sequelize.define('User', {
+export const UserModel = sequelize.define('user', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,

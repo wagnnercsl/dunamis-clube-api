@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { Request, Response, Router } from 'express'
-import { PresenceModel } from '../../models/meetingUser'
+import { PresenceModel } from '../../models/presence'
 
 const meetingSchema = z.object({
     id: z.number().optional(),
