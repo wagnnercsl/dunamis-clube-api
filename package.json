@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node ./dist/server.js",
+    "db:migrate": "npx sequelize-cli db:migrate",
     "db:sync": "tsnd ./src/db/sync.ts",
     "dev": "tsnd --respawn --transpile-only --ignore-watch node_modules -r tsconfig-paths/register ./src/server.ts --clear-screen=false",
     "test": "jest --detectOpenHandles --forceExit --maxworkers=1",

@@ -1,6 +1,6 @@
 import { UserModel } from "../models/user"
 import { MeetingModel } from "../models/meeting"
-import { PresenceModel } from "../models/meetingUser"
+import { PresenceModel } from "../models/presence"
 
 async function syncDB() {
     console.warn('SYNCYNG ALL TABLES!')
