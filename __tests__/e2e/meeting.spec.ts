@@ -1,29 +1,33 @@
 import {
-    jest,
     describe,
     test,
     expect,
     beforeAll,
-    afterAll,
-    afterEach
+    afterAll
 } from '@jest/globals'
 
 import supertest from 'supertest'
 
 import server from '../../src/server'
+import { MeetingModel } from '../../src/models/meeting'
 
-describe('API E2E Tests', () => {
+describe('Meeting E2E tests', () => {
 
-    afterAll((done) => {
-
-        supertest(server)
-            .delete('/meeting')
-            .send({})
-
-        server.close(done)
+    beforeAll(async () => {
+        await supertest(server)
+            .post('/meeting')
+            .send({ meetingDate: '2023-10-02', activity: 'Pioneiria, Fogos', comments: 'blabla' })
     })
 
-    test('POST meeting with success', async () => {
+    afterAll((done) => {
+        Promise.all([
+            MeetingModel.destroy({ where: {} })
+        ]).then(() => {
+            server.close(done)
+        })
+    })
+
+    test('Create meeting with success', async () => {
         const response = await supertest(server)
             .post('/meeting')
             .send({ meetingDate: '2023-10-02', activity: 'Pioneiria, Fogos', comments: 'blabla' })
@@ -32,7 +36,7 @@ describe('API E2E Tests', () => {
         expect(response.text).not.toContain('issues')
     })
 
-    test('POST meeting with fail', async () => {
+    test('Create meeting with fail', async () => {
         const response = await supertest(server)
             .post('/meeting')
             .send({ activity: 'Pioneiria, Fogos', comments: 'blabla' })
@@ -41,14 +45,14 @@ describe('API E2E Tests', () => {
         expect(response.text).toContain('issues')
     })
 
-    test('GET meeting with success', async () => {
+    test('List all meeting with success', async () => {
         const response = await supertest(server)
             .get('/meeting')
 
         expect(response.status).toEqual(200)
     })
 
-    test('PUT meeting with success', async () => {
+    test('Update meeting with success', async () => {
         const response = await supertest(server)
             .put('/meeting/1')
             .send({ meetingDate: '2023-10-02', activity: 'update + Pioneiria, Fogos', comments: 'blabla' })
@@ -56,7 +60,7 @@ describe('API E2E Tests', () => {
         expect(response.status).toEqual(200)
     })
 
-    test('DELETE meeting with success', async () => {
+    test('Delete meeting with success', async () => {
         const response = await supertest(server)
             .delete('/meeting/1')
 

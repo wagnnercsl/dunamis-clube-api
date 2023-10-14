@@ -4,8 +4,7 @@ import {
     test,
     expect,
     beforeAll,
-    afterAll,
-    afterEach
+    afterAll
 } from '@jest/globals'
 
 import supertest, { Response } from 'supertest'
@@ -15,21 +14,10 @@ import { UserModel } from '../../src/models/user';
 import { MeetingModel } from '../../src/models/meeting';
 import { PresenceModel } from '../../src/models/presence';
 
-describe('API E2E Tests', () => {
+describe('Presence E2E tests', () => {
 
     let currentUser: Response;
     let currentMeeting: Response;
-
-    afterAll((done) => {
-
-        Promise.all([
-            UserModel.destroy({ where: {} }),
-            MeetingModel.destroy({ where: {} }),
-            PresenceModel.destroy({ where: {} })
-        ]).then(() => {
-            server.close(done)
-        })
-    })
 
     beforeAll(async () => {
         currentUser = await supertest(server)
@@ -41,26 +29,43 @@ describe('API E2E Tests', () => {
             .send({ meetingDate: '2023-10-02', activity: 'Pioneiria, Fogos', comments: 'blabla' })
     })
 
+    afterAll((done) => {
+        Promise.all([
+            UserModel.destroy({ where: {} }),
+            MeetingModel.destroy({ where: {} }),
+            PresenceModel.destroy({ where: {} })
+        ]).then(() => {
+            server.close(done)
+        })
+    })
 
-    test('POST presence with success', async () => {
-        console.log('HERE', [currentUser.body, currentMeeting.body])
+
+    test('Create presence with success', async () => {
         const response = await supertest(server)
             .post('/presence')
             .send({ userId: currentUser.body, meetingId: currentMeeting.body })
-
 
         expect(response.status).toEqual(201)
         expect(response.text).not.toContain('issues')
     })
 
-    test('GET presence with success', async () => {
+    test('Create User with fail', async () => {
+        const response = await supertest(server)
+            .post('/presence')
+            .send({ userId: '', meetingId: currentMeeting.body })
+
+        expect(response.status).toEqual(500)
+        expect(response.text).toContain('issues')
+    })
+
+    test('List all presence with success', async () => {
         const response = await supertest(server)
             .get('/presence')
 
         expect(response.status).toEqual(200)
     })
 
-    test('PUT presence with success', async () => {
+    test('Update presence with success', async () => {
         const response = await supertest(server)
             .put('/presence/1')
             .send({ userId: 1, meetingId: 1 })
@@ -68,7 +73,7 @@ describe('API E2E Tests', () => {
         expect(response.status).toEqual(200)
     })
 
-    test('DELETE presence with success', async () => {
+    test('Delete presence with success', async () => {
         const response = await supertest(server)
             .delete('/presence/1')
 

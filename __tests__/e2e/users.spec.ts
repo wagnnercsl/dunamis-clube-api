@@ -10,19 +10,25 @@ import {
 import supertest from 'supertest'
 
 import server from '../../src/server'
+import { UserModel } from '../../src/models/user'
 
-describe('API E2E Tests', () => {
+describe('User E2E tests', () => {
 
-    afterAll((done) => {
-
-        supertest(server)
-            .delete('/user')
-            .send({})
-
-        server.close(done)
+    beforeAll(async () => {
+        await supertest(server)
+            .post('/user')
+            .send({ firstName: 'test', lastName: 'e2e', phone: '51999999', role: 'desbravador' })
     })
 
-    test('POST Users with success', async () => {
+    afterAll((done) => {
+        Promise.all([
+            UserModel.destroy({ where: {} })
+        ]).then(() => {
+            server.close(done)
+        })
+    })
+
+    test('Create User with success', async () => {
         const response = await supertest(server)
             .post('/user')
             .send({ firstName: 'test', lastName: 'e2e', phone: '51999999', role: 'desbravador' })
@@ -31,7 +37,7 @@ describe('API E2E Tests', () => {
         expect(response.text).not.toContain('issues')
     })
 
-    test('POST Users with fail', async () => {
+    test('Create User with fail', async () => {
         const response = await supertest(server)
             .post('/user')
             .send({ firstName: 'test', lastName: 'e2e' })
@@ -40,7 +46,7 @@ describe('API E2E Tests', () => {
         expect(response.text).toContain('issues')
     })
 
-    test('GET Users with success', async () => {
+    test('GET All Users with success', async () => {
         const response = await supertest(server)
             .get('/user')
 
