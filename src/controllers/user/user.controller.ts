@@ -27,17 +27,13 @@ export async function createUser(req: Request, res: Response) {
     try {
         const { firstName, lastName, phone, role } = req.body as User
 
-        const validatedSchema = userSchema.parse({ firstName, lastName, phone, role })
+        userSchema.parse({ firstName, lastName, phone, role })
 
-        if (validatedSchema) {
-            const result = await UserModel.create({ firstName, lastName, phone, role }) as unknown as User
+        const result = await UserModel.create({ firstName, lastName, phone, role }) as unknown as User
 
-            console.log("User created! ", result.id)
+        console.log("User created! ", result.id)
 
-            res.status(201).json(result.id)
-        } else {
-            res.status(400).json()
-        }
+        res.status(201).json(result.id)
     } catch (error: any) {
         res.status(500).json(error)
         // res.status(500).json({ code: error?.issues[0].code, path: error?.issues[0].path, message: error?.issues[0].message })
@@ -77,18 +73,6 @@ export async function deleteUser(req: Request, res: Response) {
         console.log("User deleted! ", result)
 
         res.json(result).status(200)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-export async function deleteAll(req: Request, res: Response) {
-    try {
-        const result = await UserModel.destroy({ truncate: true }) as unknown as User
-
-        console.log("User deleted! ", result)
-
-        res.json(result).status(201)
     } catch (error) {
         console.log(error)
     }

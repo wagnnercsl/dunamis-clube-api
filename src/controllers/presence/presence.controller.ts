@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { ZodError, z } from 'zod'
 import { Request, Response, Router } from 'express'
 import { PresenceModel } from '../../models/presence'
 
@@ -24,17 +24,13 @@ export async function createPresence(req: Request, res: Response) {
     try {
         const { userId, meetingId } = req.body as Presence
 
-        const validatedSchema = meetingSchema.parse({ userId, meetingId })
+        meetingSchema.parse({ userId, meetingId })
 
-        if (validatedSchema) {
-            const result = await PresenceModel.create({ userId, meetingId }) as unknown as Presence
+        const result = await PresenceModel.create({ userId, meetingId }) as unknown as Presence
 
-            console.log("Presence created! ", result.id)
+        console.log("Presence created! ", result.id)
 
-            res.status(201).json(result.id)
-        } else {
-            res.status(400).json()
-        }
+        res.status(201).json(result.id)
     } catch (error: any) {
         res.status(500).json(error)
     }
@@ -73,19 +69,6 @@ export async function deletePresence(req: Request, res: Response) {
         console.log("Presence deleted! ", result)
 
         res.json(result).status(200)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-export async function deleteAll(req: Request, res: Response) {
-    try {
-
-        const result = await PresenceModel.destroy({ truncate: true })
-
-        console.log("User deleted! ", result)
-
-        res.json(result).status(201)
     } catch (error) {
         console.log(error)
     }

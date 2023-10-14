@@ -7,6 +7,5 @@ router.get('/', userController.getAll)
 router.post('/', userController.createUser)
 router.put('/:id', userController.updateUser)
 router.delete('/:id', userController.deleteUser)
-router.delete('/', userController.deleteAll)
 
 export default router
