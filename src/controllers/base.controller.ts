@@ -1,14 +1,17 @@
-import express, { Express, Request, Response } from 'express'
+import express, { Express } from 'express'
+import cors from 'cors'
 
 const app: Express = express()
 import userRoutes from './user'
 import meetingRoutes from './meeting'
 import presenceRoutes from './presence'
 
-// app.use('/', (request: Request, response: Response) => {
-//     response.status(200).json('ok')
-// })
+const corsOptions = {
+    origin: 'http://localhost:5173',
+    optionsSuccessStatus: 200
+}
 
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use('/user', userRoutes)
 app.use('/meeting', meetingRoutes)
