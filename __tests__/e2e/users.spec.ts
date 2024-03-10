@@ -4,7 +4,9 @@ import {
     test,
     expect,
     beforeAll,
-    afterAll
+    afterAll,
+    beforeEach,
+    afterEach
 } from '@jest/globals'
 
 import supertest from 'supertest'
@@ -20,11 +22,11 @@ describe('User E2E tests', () => {
             .send({ firstName: 'test', lastName: 'e2e', phone: '51999999', role: 'desbravador' })
     })
 
-    afterAll((done) => {
+    afterAll(() => {
         Promise.all([
             UserModel.destroy({ where: {} })
         ]).then(() => {
-            server.close(done)
+            server.close()
         })
     })
 
@@ -40,7 +42,7 @@ describe('User E2E tests', () => {
     test('Create User with fail', async () => {
         const response = await supertest(server)
             .post('/user')
-            .send({ firstName: 'test', lastName: 'e2e' })
+            .send({ firstName: 1234, lastName: 'e2e' })
 
         expect(response.status).toEqual(500)
         expect(response.text).toContain('issues')
@@ -61,10 +63,25 @@ describe('User E2E tests', () => {
         expect(response.status).toEqual(200)
     })
 
+    test('PUT Users with fail', async () => {
+        const response = await supertest(server)
+            .put('/user/a')
+            .send({ firstName: 'test updated', lastName: 'e2e' })
+
+        expect(response.status).toEqual(404)
+    })
+
     test('DELETE Users with success', async () => {
         const response = await supertest(server)
             .delete('/user/1')
 
         expect(response.status).toEqual(200)
+    })
+
+    test('DELETE Users with fail', async () => {
+        const response = await supertest(server)
+            .delete('/user/a')
+
+        expect(response.status).toEqual(404)
     })
 })

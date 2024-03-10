@@ -4,7 +4,8 @@ import {
     test,
     expect,
     beforeAll,
-    afterAll
+    afterAll,
+    beforeEach
 } from '@jest/globals'
 
 import supertest, { Response } from 'supertest'
@@ -35,7 +36,7 @@ describe('Presence E2E tests', () => {
             MeetingModel.destroy({ where: {} }),
             PresenceModel.destroy({ where: {} })
         ]).then(() => {
-            server.close(done)
+            server.close()
         })
     })
 

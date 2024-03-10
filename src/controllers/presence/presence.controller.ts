@@ -8,7 +8,13 @@ const meetingSchema = z.object({
     meetingId: z.number().min(1, { message: 'Deve ser um número maior que zero.' }),
 })
 
-type Presence = z.infer<typeof meetingSchema>
+// type Presence = z.infer<typeof meetingSchema>
+
+interface Presence {
+    id: number;
+    userId: number;
+    meetingId: number;
+}
 
 export async function getAll(req: Request, res: Response) {
     try {
